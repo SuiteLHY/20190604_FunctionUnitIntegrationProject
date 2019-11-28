@@ -953,10 +953,6 @@ public class ExcelUtil {
 							cell.setCellValue(toCellStringVal(cellValue));
 							cellNo[0]++;
 						});
-						// (test>
-						if (rowNo[0] == 0) {
-							System.out.println(row.getRowStyle());
-						}
 						rowNo[0]++;
 					});
 					sheetNo[0]++;
