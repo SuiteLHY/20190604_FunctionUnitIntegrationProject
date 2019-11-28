@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.18</version>
+			<version>1.19</version>
 		</dependency>
 		<!-- === WordUtil功能单件(额外引用 - 支持doc文件处理) === -->
 		<dependency>
