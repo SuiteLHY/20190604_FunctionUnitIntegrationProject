@@ -26,7 +26,7 @@ public class WordUtil {
      */
     protected static String toCellStringVal(Object data) {
         if (null != data) {
-            // 基本类型处理
+            // 基本业务类型处理
             if (data instanceof Boolean) {
                 return String.valueOf(data);
             } else if (data instanceof Character) {
@@ -44,7 +44,7 @@ public class WordUtil {
             } else if (data instanceof String) {
                 return String.valueOf(data);
             }
-            // 非基本类型处理
+            // 其他业务类型处理
             if (data instanceof java.math.BigDecimal) {
                 return ((java.math.BigDecimal) data).toPlainString();
             }
@@ -56,7 +56,14 @@ public class WordUtil {
     }
 
     //===== 读取WORD操作的实现 =====//
+
     //===== 生成WORD操作的实现 =====//
+    /**
+     * 生成Word文档
+     * @param data
+     * @param os
+     * @return
+     */
     @SuppressWarnings("resource")
 	public static boolean createWordDocx(Map<String, List<Map<String, Object>>> data, OutputStream os) {
         if (null != data && null != os) {
@@ -66,7 +73,9 @@ public class WordUtil {
                 CTSectPr docxCtSectPr = docx.getDocument().getBody().isSetSectPr()
                         ? docx.getDocument().getBody().getSectPr()
                         : docx.getDocument().getBody().addNewSectPr();
-                CTPageSz docxPgSz = (docxCtSectPr.isSetPgSz()) ? docxCtSectPr.getPgSz() : docxCtSectPr.addNewPgSz();
+                CTPageSz docxPgSz = (docxCtSectPr.isSetPgSz())
+                        ? docxCtSectPr.getPgSz()
+                        : docxCtSectPr.addNewPgSz();
                 // WORD文档页面 - 排版 - 设置横板
                 docxPgSz.setW(BigInteger.valueOf(15840));
                 docxPgSz.setH(BigInteger.valueOf(11907));
@@ -88,15 +97,19 @@ public class WordUtil {
                 firstParagraph.setAlignment(ParagraphAlignment.LEFT);
                 firstParagraph.setVerticalAlignment(TextAlignment.CENTER);
                 XWPFRun firstParagraphRun = firstParagraph.createRun();
-                firstParagraphRun.setText("xxx印制"
-                        + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                        + "报告时间：" + new SimpleDateFormat("yyyy年MM月dd日").format(new Date())
+                firstParagraphRun.setText("xxx印制" +
+                        "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                        "报告时间：" + new SimpleDateFormat("yyyy年MM月dd日").format(new Date())
                 );
                 firstParagraphRun.setColor("000000");
                 firstParagraphRun.setFontSize(16);
                 // 段落 - 样式 - 设置中文字体
-                CTRPr firstParaRunRpr = firstParagraphRun.getCTR().isSetRPr() ? firstParagraphRun.getCTR().getRPr() : firstParagraphRun.getCTR().addNewRPr() ;
-                CTFonts firstParaRunFonts = firstParaRunRpr.isSetRFonts() ? firstParaRunRpr.getRFonts() : firstParaRunRpr.addNewRFonts();
+                CTRPr firstParaRunRpr = firstParagraphRun.getCTR().isSetRPr()
+                        ? firstParagraphRun.getCTR().getRPr()
+                        : firstParagraphRun.getCTR().addNewRPr();
+                CTFonts firstParaRunFonts = firstParaRunRpr.isSetRFonts()
+                        ? firstParaRunRpr.getRFonts()
+                        : firstParaRunRpr.addNewRFonts();
                 firstParaRunFonts.setAscii("仿宋");
                 firstParaRunFonts.setEastAsia("仿宋");
                 firstParaRunFonts.setHAnsi("仿宋");
@@ -110,27 +123,41 @@ public class WordUtil {
                 int[] rowNo = new int[]{0};
                 data.forEach((rowName, rowContent) -> {
                     // 创建表格行
-                    XWPFTableRow row = (null != infoTable.getRow(rowNo[0])) ? infoTable.getRow(rowNo[0]) : infoTable.createRow();
+                    XWPFTableRow row = (null != infoTable.getRow(rowNo[0]))
+                            ? infoTable.getRow(rowNo[0])
+                            : infoTable.createRow();
                     int[] cellNo = new int[]{0};
                     rowContent.forEach((cellInfo) -> {
                         // 创建行 - 单元格
-                        XWPFTableCell cell = (null != row.getCell(cellNo[0])) ? row.getCell(cellNo[0]) : row.addNewTableCell();
+                        XWPFTableCell cell = (null != row.getCell(cellNo[0]))
+                                ? row.getCell(cellNo[0])
+                                : row.addNewTableCell();
                         // 单元格样式
                         CTTc cttc = cell.getCTTc();
                         CTTcPr cttcPr = cttc.addNewTcPr();
                         cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.CENTER);
                         cttcPr.addNewVAlign().setVal(STVerticalJc.CENTER);
                         // 单元格的段落 - 内容和样式
-                        XWPFParagraph cellParagraph = (null != cell.getParagraphArray(0)) ? cell.getParagraphArray(0) : cell.addParagraph();
+                        XWPFParagraph cellParagraph = (null != cell.getParagraphArray(0))
+                                ? cell.getParagraphArray(0)
+                                : cell.addParagraph();
                         cellParagraph.setAlignment(ParagraphAlignment.CENTER);
                         cellParagraph.setVerticalAlignment(TextAlignment.CENTER);
                         XWPFRun cellParaRun = cellParagraph.createRun();
                         cellParaRun.setText(toCellStringVal(cellInfo.get("value")));
                         cellParaRun.setColor("000000");
                         cellParaRun.setFontSize(14);
+                        // 设置第一行的所有单元格样式为"粗体"
+                        if (rowNo[0] == 0) {
+                            cellParaRun.setBold(true);
+                        }
                         // 单元格的段落 - 样式 - 设置中文字体
-                        CTRPr paraRunRpr = cellParaRun.getCTR().isSetRPr() ? cellParaRun.getCTR().getRPr() : cellParaRun.getCTR().addNewRPr();
-                        CTFonts paraRunFonts = paraRunRpr.isSetRFonts() ? paraRunRpr.getRFonts() : paraRunRpr.addNewRFonts();
+                        CTRPr paraRunRpr = cellParaRun.getCTR().isSetRPr()
+                                ? cellParaRun.getCTR().getRPr()
+                                : cellParaRun.getCTR().addNewRPr();
+                        CTFonts paraRunFonts = paraRunRpr.isSetRFonts()
+                                ? paraRunRpr.getRFonts()
+                                : paraRunRpr.addNewRFonts();
                         paraRunFonts.setAscii("黑体");
                         paraRunFonts.setEastAsia("黑体");
                         paraRunFonts.setHAnsi("黑体");
