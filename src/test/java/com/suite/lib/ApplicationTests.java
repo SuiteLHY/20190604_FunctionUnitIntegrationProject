@@ -12,10 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,6 +38,7 @@ public class ApplicationTests {
 		String readExcelPath = createExcelPath1;
 		//----- 生成Excel
 		try {
+			Date currentTime = new Date();
 			//=== 生成数据 ===//
 			Map<String, List<Map<String, Object>>> sheetMap = new LinkedHashMap<>();
 			List<Map<String, Object>> sheet1 = new ArrayList<>();
@@ -67,15 +65,27 @@ public class ApplicationTests {
 			sheet1_row.put("事件", "事件");
 			sheet1_row.put("更新时间", "更新时间");
 
-			sheet1_row1.put("序号", "序号");
-			sheet1_row1.put("姓名", "姓名");
-			sheet1_row1.put("性别", "性别");
-			sheet1_row1.put("身份", "身份");
-			sheet1_row1.put("事件", "事件");
-			sheet1_row1.put("更新时间", "更新时间");
+			sheet1_row1.put("序号", "1");
+			sheet1_row1.put("姓名", "张三");
+			sheet1_row1.put("性别", "男");
+			sheet1_row1.put("身份", "身份1");
+			sheet1_row1.put("事件", "事件1");
+			sheet1_row1.put("更新时间", currentTime);
 
-			sheet1_row2.putAll(sheet1_row1);
-			sheet1_row3.putAll(sheet1_row1);
+			sheet1_row2.put("序号", "2");
+			sheet1_row2.put("姓名", "李四");
+			sheet1_row2.put("性别", "男");
+			sheet1_row2.put("身份", "身份2");
+			sheet1_row2.put("事件", "事件1");
+			sheet1_row2.put("更新时间", currentTime);
+
+			sheet1_row3.put("序号", "3");
+			sheet1_row3.put("姓名", "王五");
+			sheet1_row3.put("性别", "女");
+			sheet1_row3.put("身份", "身份1");
+			sheet1_row3.put("事件", "事件4");
+			sheet1_row3.put("更新时间", currentTime);
+
 			//=== 生成输出流 ===//
 			File file = new File(createExcelPath);
 			if (!file.getParentFile().exists()) {
@@ -93,8 +103,8 @@ public class ApplicationTests {
 		//----- 读取Excel
 		if (null != readExcelPath && new File(readExcelPath).exists()) {
 			Map<String, List<Map<String, Object>>> sheetMap = ExcelUtil.readExcel(readExcelPath);
-			System.out.println("ExcelUtil#readExcel "
-					+ ((null != sheetMap && !sheetMap.isEmpty()) ? "complete!" : "undone!")
+			System.out.println("ExcelUtil#readExcel " +
+					((null != sheetMap && !sheetMap.isEmpty()) ? "complete!" : "undone!")
 			);
 		}
 	}
@@ -111,33 +121,78 @@ public class ApplicationTests {
 		//----- 生成Word
 		try {
 			//=== 生成数据 ===//
+			/* 数据装配这一块其实可以用多维数组来传递消息，以后优化代码可以考虑换用数组 */
 			Map<String, List<Map<String, Object>>> wordData = new LinkedHashMap<>();
 			List<Map<String, Object>> row = new ArrayList<>();
 			List<Map<String, Object>> row1 = new ArrayList<>();
 			List<Map<String, Object>> row2 = new ArrayList<>();
 			List<Map<String, Object>> row3 = new ArrayList<>();
-			Map<String, Object> cell1 = new LinkedHashMap<>();
-			Map<String, Object> cell2 = new LinkedHashMap<>();
-			Map<String, Object> cell3 = new LinkedHashMap<>();
-			Map<String, Object> cell4 = new LinkedHashMap<>();
+
+			Map<String, Object> row_cell1 = new LinkedHashMap<>();
+			Map<String, Object> row_cell2 = new LinkedHashMap<>();
+			Map<String, Object> row_cell3 = new LinkedHashMap<>();
+			Map<String, Object> row_cell4 = new LinkedHashMap<>();
+
+			Map<String, Object> row1_cell1 = new LinkedHashMap<>();
+			Map<String, Object> row1_cell2 = new LinkedHashMap<>();
+			Map<String, Object> row1_cell3 = new LinkedHashMap<>();
+			Map<String, Object> row1_cell4 = new LinkedHashMap<>();
+
+			Map<String, Object> row2_cell1 = new LinkedHashMap<>();
+			Map<String, Object> row2_cell2 = new LinkedHashMap<>();
+			Map<String, Object> row2_cell3 = new LinkedHashMap<>();
+			Map<String, Object> row2_cell4 = new LinkedHashMap<>();
+
+			Map<String, Object> row3_cell1 = new LinkedHashMap<>();
+			Map<String, Object> row3_cell2 = new LinkedHashMap<>();
+			Map<String, Object> row3_cell3 = new LinkedHashMap<>();
+			Map<String, Object> row3_cell4 = new LinkedHashMap<>();
 
 			wordData.put("header", row);
 			wordData.put("Row1", row1);
 			wordData.put("Row2", row2);
 			wordData.put("Row3", row3);
 
-			row.add(cell1);
-			row.add(cell2);
-			row.add(cell3);
-			row.add(cell4);
-			row1.addAll(row);
-			row2.addAll(row);
-			row3.addAll(row);
+			row.add(row_cell1);
+			row.add(row_cell2);
+			row.add(row_cell3);
+			row.add(row_cell4);
 
-			cell1.put("value", "序号");
-			cell2.put("value", "姓名");
-			cell3.put("value", "性别");
-			cell4.put("value", "身份");
+			row1.add(row1_cell1);
+			row1.add(row1_cell2);
+			row1.add(row1_cell3);
+			row1.add(row1_cell4);
+
+			row2.add(row2_cell1);
+			row2.add(row2_cell2);
+			row2.add(row2_cell3);
+			row2.add(row2_cell4);
+
+			row3.add(row3_cell1);
+			row3.add(row3_cell2);
+			row3.add(row3_cell3);
+			row3.add(row3_cell4);
+
+			row_cell1.put("value", "序号");
+			row_cell2.put("value", "姓名");
+			row_cell3.put("value", "性别");
+			row_cell4.put("value", "身份");
+
+			row1_cell1.put("value", "1");
+			row1_cell2.put("value", "张三");
+			row1_cell3.put("value", "男");
+			row1_cell4.put("value", "身份1");
+
+			row2_cell1.put("value", "2");
+			row2_cell2.put("value", "李四");
+			row2_cell3.put("value", "男");
+			row2_cell4.put("value", "身份2");
+
+			row3_cell1.put("value", "3");
+			row3_cell2.put("value", "王五");
+			row3_cell3.put("value", "女");
+			row3_cell4.put("value", "身份1");
+
 			//=== 生成输出流 ===//
 			File file = new File(createWordPath);
 			if (!file.getParentFile().exists()) {
@@ -161,7 +216,6 @@ public class ApplicationTests {
 
 	@Test
 	public void showURL() throws IOException {
-
 		// 第一种：获取类加载的根路径   D:\git\daotie\daotie\target\classes
 		File f = new File(this.getClass().getResource("/").getPath());
 		System.out.println(f);
@@ -190,7 +244,6 @@ public class ApplicationTests {
 
 		// 第五种：  获取所有的类路径 包括jar包的路径
 		System.out.println(System.getProperty("java.class.path"));
-
 	}
 
 }

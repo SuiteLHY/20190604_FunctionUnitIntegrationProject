@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 农历工具类
  * @description 目前仅精确到：年 -> 月 -> 日
- * @author LuoPei
+ * @author Suite
  * @source http://www.it610.com/article/271380.htm
  * 
  */
@@ -35,9 +35,9 @@ class LunarCalendarUtil {
     /** 天干(天文学 - 术语) */
     private final static String[] CELESTIAL_STEM = new String[] { "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" };
     
-    private final static String CHINESE_NUMBER[] = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十"
-    		, "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "二十一"
-    		, "二十二", "二十三", "二十四", "二十五", "二十六", "二十七", "二十八", "二十九", "三十", "三十一"
+    private final static String CHINESE_NUMBER[] = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
+			"十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "二十一",
+			"二十二", "二十三", "二十四", "二十五", "二十六", "二十七", "二十八", "二十九", "三十", "三十一"
     };
 
     /** (中国古语) */
@@ -594,7 +594,6 @@ public class CalendarController {
 	//===== Service Implementation =====//
 	/**
 	 * 将当前<code>CalendarController</code>的时间转换为模板
-	 * @param date
 	 * @return
 	 */
 	public String format() {

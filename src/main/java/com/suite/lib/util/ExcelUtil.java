@@ -426,7 +426,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setFontName(String name) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -438,13 +437,11 @@ class ExcelFont implements Font {
 	@Override
 	public void setFontHeight(short height) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setFontHeightInPoints(short height) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -462,7 +459,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setItalic(boolean italic) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -474,7 +470,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setStrikeout(boolean strikeout) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -486,7 +481,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setColor(short color) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -498,7 +492,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setTypeOffset(short offset) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -510,7 +503,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setUnderline(byte underline) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -528,13 +520,11 @@ class ExcelFont implements Font {
 	@Override
 	public void setCharSet(byte charset) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setCharSet(int charset) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -552,7 +542,6 @@ class ExcelFont implements Font {
 	@Override
 	public void setBold(boolean bold) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -798,12 +787,12 @@ public class ExcelUtil {
 	/**
 	 * 解析Excel文件
 	 * @description 
-	 * 	· 把excel文件里每个Sheet页的数据解析后放入一个List<Map<String, Object>>>中.
+	 * 	· 把excel文件里每个Sheet页的数据解析后放入一个List<Map<String, Object>>>中
 	 * @param workbook
 	 * @return - <b>sheetMap</b>
 	 */
 	protected static Map<String, List<Map<String, Object>>> readExcel(Workbook workbook) {
-		Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
+		Map<String, List<Map<String, Object>>> result = new HashMap<>();
         try {
             for (Iterator<Sheet> iter = workbook.sheetIterator(); iter.hasNext();) {
             	//--- 遍历Sheet
@@ -842,7 +831,7 @@ public class ExcelUtil {
 	
 	/**
 	 * 解析Excel文件的Row对象
-	 * @param row - 工作表对象
+	 * @param row - 工作表的行对象
 	 * @return 
 	 */
 	protected static Map<String, Object> readExcel_Row(Row row) {
@@ -859,8 +848,8 @@ public class ExcelUtil {
 	}
 	
 	/**
-	 * 解析Excel文件的Row对象
-	 * @param row - 工作表对象
+	 * 解析Excel文件的cell对象
+	 * @param cell - 工作表的单元格对象
 	 * @return 
 	 */
 	protected static Map<String, Object> readExcel_Cell(Cell cell) {
@@ -870,7 +859,8 @@ public class ExcelUtil {
 			String cellName;
 			Cell firstRowCell = cell.getRow().getSheet().getRow(0).getCell(cell.getColumnIndex());
 			if (null == firstRowCell 
-					|| null == (cellName = getCellStringVal(firstRowCell)) || "".equals(cellName.trim())) {
+					|| null == (cellName = getCellStringVal(firstRowCell))
+					|| "".equals(cellName.trim())) {
 				cellName = "column" + (cell.getColumnIndex() + 1);
 			}
 			// 装配单元格数据
@@ -911,7 +901,9 @@ public class ExcelUtil {
 	 * @param params - 拓展参数集合
 	 * @return
 	 */
-	public static boolean createExcel(Map<String, List<Map<String, Object>>> sheetMap, OutputStream os, Map<String, String> params) {
+	public static boolean createExcel(Map<String, List<Map<String, Object>>> sheetMap,
+			OutputStream os,
+		    Map<String, String> params) {
 		String version = null;
 		if (null != params) {
 			version = params.get("version");
@@ -923,7 +915,8 @@ public class ExcelUtil {
 				int[] sheetNo = new int[]{1};
 				sheetMap.forEach((sheetName, sheetContent) -> {
 					//--- 遍历创建Sheet
-					Sheet sheet = createSheet(workbook, (!"".equals(sheetName.trim()) ? sheetName : "Sheet" + sheetNo[0]));
+					Sheet sheet = createSheet(workbook,
+							(!"".equals(sheetName.trim()) ? sheetName : ("Sheet" + sheetNo[0])));
 					final int[] rowNo = new int[]{0};
 					sheetContent.forEach((rowMap) -> {
 						//--- 遍历创建Row
@@ -937,7 +930,8 @@ public class ExcelUtil {
 							if (0 == rowNo[0]) {
 								// 表头样式
 								ExcelFont font = new ExcelFont(workbook.createFont());
-								font.setBold(true);
+//								font.setBold(true);
+								font.setBold(workbook, true);
 								cs.setFont(workbook, font.font);
 							}
 							/*cs.setBorderTop(BorderStyle.THIN);
@@ -959,6 +953,10 @@ public class ExcelUtil {
 							cell.setCellValue(toCellStringVal(cellValue));
 							cellNo[0]++;
 						});
+						// (test>
+						if (rowNo[0] == 0) {
+							System.out.println(row.getRowStyle());
+						}
 						rowNo[0]++;
 					});
 					sheetNo[0]++;
@@ -971,5 +969,5 @@ public class ExcelUtil {
 		}
 		return true;
 	}
-	
+
 }
