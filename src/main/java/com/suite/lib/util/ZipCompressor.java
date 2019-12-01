@@ -107,7 +107,9 @@ public class ZipCompressor {
 							&& null != (zipTempFiles = zipTempDirectory.listFiles())) {
 						/**
 						 * (JVM结束时)删除临时文件夹.
-						 * 注明:此处声明是由于java.io.File.deleteOnExit()实现方法的执行顺序与声明顺序相反,文件夹的删除声明需要在文件夹子目录的删除声明之前才可能执行成功.
+						 *
+						 * 注明:此处声明是由于java.io.File.deleteOnExit()实现方法的执行顺序与声明顺序相反,
+						 * 文件夹的删除声明需要在文件夹子目录的删除声明之前才可能执行成功.
 						 */
 						zipTempDirectory.deleteOnExit();
 						// 遍历已有压缩文件中的文件集(临时文件夹中的文件集),逐一添加到新的压缩文件之中
