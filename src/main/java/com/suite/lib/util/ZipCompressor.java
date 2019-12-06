@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
@@ -276,9 +277,9 @@ public class ZipCompressor {
 	 * @param outputDirectoryPath -[从压缩文件中解压的文件集的输出路径]
 	 * @return
 	 */
-	public boolean decompress(String outputDirectoryPath) throws RuntimeException {
+	public boolean decompress(@NotNull String outputDirectoryPath) throws RuntimeException {
 		if (null == outputDirectoryPath) {
-			throw new RuntimeException(outputDirectoryPath + "不存在!");
+			throw new RuntimeException("参数outputDirectoryPath为空!");
 		}
 		if (null == zipFile || !zipFile.exists()) {
 			throw new RuntimeException("压缩文件不存在,无法解压!");
