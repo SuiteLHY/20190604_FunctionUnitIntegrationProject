@@ -160,12 +160,13 @@ public class ZipCompressor {
 					zipOutputStream.flush();
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-				try {
-					zipOutputStream.close();
-				} catch (Exception e) {
-					System.err.println("压缩文件的输出流关闭失败!错误信息如下:");
-					e.printStackTrace();
+				} finally {
+					try {
+						zipOutputStream.close();
+					} catch (Exception e) {
+						System.err.println("压缩文件的输出流关闭失败!错误信息如下:");
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -249,17 +250,18 @@ public class ZipCompressor {
 			e.printStackTrace();
 		} finally {
 			// 关闭压缩文件的条目
-			if (null != entry) {
-				try {
+			try {
+				if (null != entry) {
 					out.closeEntry();
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-			}
-			// 关闭被压缩文件的输入流
-			if (null != bis) {
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				// 关闭被压缩文件的输入流
 				try {
-					bis.close();
+					if (null != bis) {
+						bis.close();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -328,18 +330,23 @@ public class ZipCompressor {
 						if (null != outputFileOutputStream) {
 							try {
 								outputFileOutputStream.flush();
-							} catch (Exception e) {
+							} catch (IOException e) {
 								e.printStackTrace();
-							}
-							try {
-								outputFileOutputStream.close();
-							} catch (Exception e) {
-								e.printStackTrace();
+							} finally {
+								try {
+									outputFileOutputStream.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 						}
 						//=== 关闭当前文件的输入流 ===//
-						if (null != zipEntry_InputStream) {
-							zipEntry_InputStream.close();
+						try {
+							if (null != zipEntry_InputStream) {
+								zipEntry_InputStream.close();
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 					}
 				}
