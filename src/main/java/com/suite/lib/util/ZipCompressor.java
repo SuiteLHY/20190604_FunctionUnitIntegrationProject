@@ -22,25 +22,38 @@ import org.apache.tools.zip.ZipOutputStream;
  */
 public class ZipCompressor {
 
-	static final int BUFFER = 8192;
+	// 缓冲区大小
+	static final int BUFFER = /*8192*/2048;
 	
-	/** 控制器实例的压缩文件 **/
+	// 压缩文件对象
 	private File zipFile;
 	
-	/** 控制器实例的压缩文件的临时存储文件(文件夹) **/
+	// 压缩文件对象的临时存储文件(文件夹)
 	private File zipTempDirectory;
 	
 	/**
-	 * 构造一个压缩文件控制器
-	 * @param pathName -[压缩文件的路径]
+	 * 构造压缩文件控制器
+	 * @param pathName - 压缩文件的路径
 	 */
-	public ZipCompressor(String pathName) {
-		zipFile = new File(pathName);
-		zipTempDirectory = null;
+	public ZipCompressor(@NotNull String pathName) {
+		new ZipCompressor(new File(pathName));
+	}
+
+	/**
+	 * 构造压缩文件控制器
+	 * @param zipFile - 压缩文件对象
+	 */
+	public ZipCompressor(@NotNull File zipFile) {
+		if (!zipFile.exists()) {
+			throw new RuntimeException("压缩文件不存在或无法访问!"
+					, new IllegalArgumentException());
+		}
+		this.zipFile = zipFile;
+		this.zipTempDirectory = null;
 	}
 	
 	/**
-	 * 压缩文件
+	 * 压缩文件操作
 	 * @Description 生成的压缩文件会覆盖原有的压缩文件.
 	 * @param srcPathName -[被压缩文件的路径]
 	 * @return
@@ -50,7 +63,7 @@ public class ZipCompressor {
 	}
 	
 	/**
-	 * 压缩文件
+	 * 压缩文件操作
 	 * @param srcPathName -[被压缩文件的路径]
 	 * @param isUpdate    -[是否更新已有的压缩文件]
 	 * @return
@@ -77,8 +90,8 @@ public class ZipCompressor {
 					// 当前服务器系统的时间戳
 					long currentTimestamp = System.currentTimeMillis();
 					/** 临时存储文件(文件夹)命名规则:[原文件不带后缀的名称]-[系统当前时间]-[随机数] **/
-					tempName += "-"+ currentTimestamp +"-"+ Math.random();
-					String tempPath = zipFile.getParent() +"\\"+ tempName;
+					tempName += "-" + currentTimestamp + "-" + Math.random();
+					String tempPath = zipFile.getParent() + "\\" + tempName;
 					// 生成存放临时存储文件的临时文件夹
 					zipTempDirectory = new File(tempPath);
 					if (!zipTempDirectory.exists()) {
@@ -88,7 +101,7 @@ public class ZipCompressor {
 					decompress(tempPath);
 					//=====//
 				} catch (Exception e) {
-					// 此时压缩文件不存在
+					//--- 此时压缩文件不存在
 				}
 			}
 			//===== 生成新的压缩文件 =====//
@@ -104,13 +117,14 @@ public class ZipCompressor {
 					//=== 装配临时文件数据到生成的压缩文件流中,并及时删除临时文件 ===//
 					/** 临时文件夹中的文件集 **/
 					File[] zipTempFiles;
-					if (zipTempDirectory.exists() && zipTempDirectory.isDirectory() 
+					if (zipTempDirectory.exists()
+							&& zipTempDirectory.isDirectory()
 							&& null != (zipTempFiles = zipTempDirectory.listFiles())) {
 						/**
 						 * (JVM结束时)删除临时文件夹.
 						 *
-						 * 注明:此处声明是由于java.io.File.deleteOnExit()实现方法的执行顺序与声明顺序相反,
-						 * 文件夹的删除声明需要在文件夹子目录的删除声明之前才可能执行成功.
+						 * 注明: 此处声明是由于java.io.File.deleteOnExit()实现方法的执行顺序与声明顺序相反,
+						 *-> 文件夹的删除声明需要在文件夹子目录的删除声明之前才可能执行成功.
 						 */
 						zipTempDirectory.deleteOnExit();
 						// 遍历已有压缩文件中的文件集(临时文件夹中的文件集),逐一添加到新的压缩文件之中
@@ -124,6 +138,7 @@ public class ZipCompressor {
 							} catch (Exception e) {
 								System.err.println("删除临时存储文件夹中的临时文件出错!错误信息如下:");
 								e.printStackTrace();
+							} finally {
 								try {
 									zipTempFile.deleteOnExit();
 								} catch (Exception e1) {
@@ -175,8 +190,8 @@ public class ZipCompressor {
 	}
 	
 	/**
-	 * 压缩文件
-	 * @Description !注意:此方法不关闭参数列表中的[压缩文件的输出流]<code>out</code>.
+	 * 压缩文件操作
+	 * @Description !注意:此方法不关闭参数列表中的 [压缩文件的输出流]<code>out</code>.
 	 * @param file    -[被压缩的文件]
 	 * @param out     -[压缩文件的输出流]
 	 * @param basedir -[压缩文件的根目录]
@@ -196,7 +211,7 @@ public class ZipCompressor {
 	}
 	
 	/**
-	 * 压缩文件目录
+	 * 压缩文件目录操作
 	 * @Description 空文件夹不进行压缩处理.
 	 * @param directory -[被压缩的文件目录]
 	 * @param out       -[压缩文件的输出流]
@@ -222,7 +237,7 @@ public class ZipCompressor {
 	}
 	
 	/**
-	 * 压缩一个文件
+	 * 压缩文件操作
 	 * @Description !注意:此方法不关闭参数列表中的[压缩文件的输出流]<code>out</code>.
 	 * @param file    -[被压缩的文件]
 	 * @param out     -[压缩文件的输出流]
@@ -272,7 +287,7 @@ public class ZipCompressor {
 	}
 	
 	/**
-	 * 解压文件
+	 * 解压文件操作
 	 * @Description 被解压的压缩文件为当前控制器的压缩文件
 	 * @param outputDirectoryPath -[从压缩文件中解压的文件集的输出路径]
 	 * @return
@@ -282,7 +297,7 @@ public class ZipCompressor {
 			throw new RuntimeException("参数outputDirectoryPath为空!");
 		}
 		if (null == zipFile || !zipFile.exists()) {
-			throw new RuntimeException("压缩文件不存在,无法解压!");
+			throw new RuntimeException("压缩文件不存在, 无法解压!");
 		}
 		boolean result = false;
 		/** 被解压的压缩文件 **/
@@ -307,10 +322,10 @@ public class ZipCompressor {
 				outputFile = new File(outputPath);
 				//=== 读取当前条目数据输出到输出文件中 ===//
 				if (zipEntry.isDirectory()) {
-					//--- 当前条目为文件目录的情况 ---//
+					//--- 当前条目为文件目录的情况
 					outputFile.mkdirs();
 				}else{
-					//--- 当前条目为一个文件的情况 ---//
+					//--- 当前条目为一个文件的情况
 					File parent = outputFile.getParentFile();
 					if (!parent.exists()) {
 						parent.mkdirs();
@@ -319,7 +334,7 @@ public class ZipCompressor {
 						zipEntry_InputStream = zip.getInputStream(zipEntry);
 						outputFileOutputStream = new FileOutputStream(outputFile);
 						int len;
-						byte[] buff = new byte[1024];
+						byte[] buff = new byte[/*1024*/BUFFER];
 						while ((len = zipEntry_InputStream.read(buff)) != -1) {
 							outputFileOutputStream.write(buff, 0, len);
 						}
