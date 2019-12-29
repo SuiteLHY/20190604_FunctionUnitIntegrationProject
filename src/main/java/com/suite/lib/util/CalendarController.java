@@ -196,7 +196,7 @@ class LunarCalendarUtil {
      * @param y
      * @return
      */
-    final private static int yearDays(int y) {
+    final private static Integer yearDays(@NotNull Integer y) {
         int i, sum = 348;
         for (i = 0x8000; i > 0x8; i >>= 1) {
             if ((LUNAR_INFO[y - 1900] & i) != 0) {
@@ -211,16 +211,14 @@ class LunarCalendarUtil {
      * @param y
      * @return
      */
-    final private static int leapDays(int y) {
+    final private static Integer leapDays(@NotNull Integer y) {
         if (leapMonth(y) != 0) {
             if ((LUNAR_INFO[y - 1900] & 0x10000) != 0) {
                 return 30;
-            } else {
-                return 29;
             }
-        } else {
-            return 0;
+            return 29;
         }
+        return 0;
     }
 
     /**
@@ -228,7 +226,7 @@ class LunarCalendarUtil {
      * @param y
      * @return
      */
-    final private static int leapMonth(int y) {
+    final private static Integer leapMonth(@NotNull Integer y) {
         return (int) (LUNAR_INFO[y - 1900] & 0xf);
     }
 
@@ -238,11 +236,8 @@ class LunarCalendarUtil {
      * @param m
      * @return
      */
-    final private static int monthDays(int y, int m) {
-        /*if ((lunarInfo[y - 1900] & (0x10000 >> m)) == 0)
-            return 29;
-        else
-            return 30;*/
+    final private static Integer monthDays(@NotNull Integer y
+			, @NotNull Integer m) {
         return ((LUNAR_INFO[y - 1900] & (0x10000 >> m)) == 0) ? 29 : 30;
     }
 
@@ -251,10 +246,11 @@ class LunarCalendarUtil {
      * @param num - <b>(年份对应的)农历纪年数</b>（容错模式处理）
      * @return - <b>(农历纪年数对应的)干支纪年数</b>
      */
-    private final static String cycle(int num) {
+    private final static String cycle(@NotNull Integer num) {
         /*final String[] Gan = new String[] { "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" };
         final String[] Zhi = new String[] { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };*/
-        return (CELESTIAL_STEM[num % CELESTIAL_STEM.length] + TERRESTRIAL_BRANCH[num % TERRESTRIAL_BRANCH.length]);
+        return CELESTIAL_STEM[num % CELESTIAL_STEM.length]
+				+ TERRESTRIAL_BRANCH[num % TERRESTRIAL_BRANCH.length];
     }
 
     //===== Get And Set Function =====//
@@ -272,7 +268,7 @@ class LunarCalendarUtil {
      * @param year - <b>年份</B>
      * @return
      */
-    public final static String getZodiacAnimals(int year) {
+    public final static String getZodiacAnimals(@NotNull Integer year) {
         return ZODIAC_ANIMALS[(year - 4) % ZODIAC_ANIMALS.length];
     }
     
@@ -290,21 +286,20 @@ class LunarCalendarUtil {
      * @param day
      * @return
      */
-    public static String getChineseDay(int day) {
-        if (day > 30)
-            return "";
-        if (day == 10)
-            return "初十";
-        else
-            return CHINESE_TEN[(day / 10) % CHINESE_TEN.length] + CHINESE_NUMBER[(day % 10 == 0) ? 9 : (day % 10 - 1)];
+    public static String getChineseDay(@NotNull Integer day) {
+        if (day > 30) return "";
+        if (day == 10) return "初十";
+        return CHINESE_TEN[(day / 10) % CHINESE_TEN.length]
+				+ CHINESE_NUMBER[(day % 10 == 0) ? 9 : (day % 10 - 1)];
     }
     
     public String getChineseMonth() {
     	return getChineseMonth(this.month);
     }
     
-    public static String getChineseMonth(int month) {
-    	return CHINESE_NUMBER[(month - 1) % CHINESE_NUMBER.length] + "月";
+    public static String getChineseMonth(@NotNull Integer month) {
+    	return (CHINESE_NUMBER[(month - 1) % CHINESE_NUMBER.length])
+				+ "月";
     }
     
     /*public String getChineseYear() {
@@ -321,13 +316,16 @@ class LunarCalendarUtil {
      * @return
      */
     final public String getCycle() {
-    	int num = year - 1900 + 36;
-    	return (cycle(num));
+    	return cycle(year - 1900 + 36);
     }
     
     //===== Service Implementation =====//
     public String toString() {
-        return year +"年"+ (leap ? "闰" : "") + CHINESE_NUMBER[(month - 1) % CHINESE_NUMBER.length] +"月"+ getChineseDay(day);
+        return year + "年"
+				+ (leap ? "闰" : "")
+				+ CHINESE_NUMBER[(month - 1) % CHINESE_NUMBER.length]
+				+"月"
+				+ getChineseDay(day);
     }
     
     //=====//
