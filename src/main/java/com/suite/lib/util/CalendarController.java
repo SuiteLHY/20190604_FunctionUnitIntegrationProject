@@ -1,5 +1,7 @@
 package com.suite.lib.util;
 
+import com.sun.istack.internal.NotNull;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +37,7 @@ class LunarCalendarUtil {
     /** 天干(天文学 - 术语) */
     private final static String[] CELESTIAL_STEM = new String[] { "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" };
     
-    private final static String CHINESE_NUMBER[] = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
+    private final static String[] CHINESE_NUMBER = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
 			"十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "二十一",
 			"二十二", "二十三", "二十四", "二十五", "二十六", "二十七", "二十八", "二十九", "三十", "三十一"
     };
@@ -68,12 +70,12 @@ class LunarCalendarUtil {
     };
     
     /** 地支(天文学 - 术语) */
-    private final static String[] TERRESTRIAL_BRANCH = new String[] { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };
+    private final static String[] TERRESTRIAL_BRANCH = {"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"};
     
     /** 十二生肖 */
-    private final static String[] ZODIAC_ANIMALS = new String[] { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
+    private final static String[] ZODIAC_ANIMALS = {"鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"};
     
-    //===== init Method =====//
+    //===== init method =====//
     /**
      * 初始化基准日期,赋值为1900年1月31日对应的内容
      */
@@ -406,7 +408,7 @@ public class CalendarController {
 	}
 	
 	/** (临时策略;暂无更优策略取代) */
-	protected static DateFormat safeSdf(String pattern) /*throws Exception*/ {
+	protected static DateFormat safeSdf(String pattern) {
 		if (null == pattern) {
 			return safeSdf.get().get(DEFAULT_DATE_FORMAT);
 		}
@@ -462,9 +464,9 @@ public class CalendarController {
 		updateCalendar();
 	}
 	
-	//===== Get And Set Function =====//
+	//===== getter and setter =====//
 	/**
-	 * 获取当期<code>CalendarController</code>的<code>Calendar</code>对象的拷贝
+	 * 获取当前 <code>CalendarController</code> 的 <code>Calendar</code>对象拷贝
 	 * @return
 	 */
 	public Calendar getCalendar() {
@@ -576,7 +578,7 @@ public class CalendarController {
 	
 	/**
 	 * 获取对应的农历中的生肖
-	 * @return
+	 * @return 生肖名称
 	 */
 	public final String getZodiacAnimals() {
 		return LunarCalendarUtil.getZodiacAnimals(this.year);
@@ -584,16 +586,16 @@ public class CalendarController {
 
 	/**
 	 * 计算指定年份对应的农历中的生肖
-	 * @param year - <b>年份</b>
-	 * @return
+	 * @param year - 年份
+	 * @return 生肖名称
 	 */
-	public final static String getZodiacAnimals(int year) {
+	public static final String getZodiacAnimals(@NotNull Integer year) {
 		return LunarCalendarUtil.getZodiacAnimals(year);
 	}
 	
 	//===== Service Implementation =====//
 	/**
-	 * 将当前<code>CalendarController</code>的时间转换为模板
+	 * 将当前 <code>CalendarController</code> 的时间转换为模板
 	 * @return
 	 */
 	public String format() {
@@ -614,7 +616,7 @@ public class CalendarController {
 	 * @since 临时策略;暂无更优策略
 	 * @param pattern - <b>用于解析的时间模板</b>
 	 * @param date - <b>被解析的时间类型对象</b>
-	 * @return
+	 * @return the formatted time string.
 	 */
 	public static String format(String pattern, Date date) {
 		return safeSdf(pattern).format(date);
@@ -664,7 +666,8 @@ public class CalendarController {
 	 * @return <code>yyyy-MM-dd HH:mm:ss</code>格式数据
 	 */
 	public String toString() {
-		return year + "-" + ((month < 10) ? "0" + month : month) 
+		return year
+				+ "-" + ((month < 10) ? "0" + month : month)
 				+ "-" + ((day < 10) ? "0" + day : day) 
 				+ " " + ((hour < 10) ? "0" + hour : hour) 
 				+ ":" + ((minute < 10) ? "0" + minute : minute) 
@@ -708,8 +711,7 @@ public class CalendarController {
 	    }
 	}*/
 	
-	/*
-	// 中国农历验证
+	/*// 中国农历验证
 	public static void main(String[] args) {
 		CalendarController cc = new CalendarController();
 		System.out.println("CalendarController#getZodiacAnimals@int -> " + CalendarController.getZodiacAnimals(cc.getYear()));
