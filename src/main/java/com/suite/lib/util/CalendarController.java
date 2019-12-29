@@ -353,7 +353,7 @@ public class CalendarController {
 	/**
 	 * 采用 ThreadLocal 避免 SimpleDateFormat 非线程安全的问题
 	 */
-	protected static ThreadLocal<Map<String, DateFormat>> safeSdf = /*new ThreadLocal<Map<String, DateFormat>>() {
+	protected static final ThreadLocal<Map<String, DateFormat>> safeSdf = /*new ThreadLocal<Map<String, DateFormat>>() {
 	    @Override
 	    protected Map<String, DateFormat> initialValue() {
 	    	Map<String, DateFormat> dateFormatMap = new HashMap<>();
